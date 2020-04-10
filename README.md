@@ -67,13 +67,13 @@ From these graphs, we can see that rnn performs worst, next is lstm, gru & bilst
 
 To make it clear, I plot the training loss & F1-score graph of rnn, lstm, gru, bilstm, bilstm with "attention" as follows:     
 <div align=center><figure class="four">
-<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/training_loss.png" width='380'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_score.png" width='380'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/loss_annotation.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_annotation.png" width='320'/>
+<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/training_loss.png" width='360'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_score.png" width='360'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/loss_annotation.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_annotation.png" width='320'/>
 </figure></div>  
 
 #### Hugging face transfer learning
 As comparison, hugging face transfering learning is introduced, 2 pretrained models(roberta, camembert) are utilized to predict the ratings, their confusion matrices are shown below:   
 <div align=center><figure class="two">
-<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/roberta_confusion.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/camembert_confusion.PNG" width='320'/>
+<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/roberta_confusion.png" width='280'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/camembert_confusion.PNG" width='280'/>
 </figure></div>  
 
 The transferred model performs better than rnn and lstm, but worse than gru and bilstm(without attention), let alone bilstm with attention. To sum up, pre-trained model generalizes well, but does not necessarily outrun our own model. Given specific training data, choose one suitable model may best the transferred model.  
