@@ -67,7 +67,7 @@ From these graphs, we can see that rnn performs worst, next is lstm, gru & bilst
 
 To make it clear, I plot the training loss & F1-score graph of rnn, lstm, gru, bilstm, bilstm with "attention" as follows:     
 <div align=center><figure class="four">
-<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/training_loss.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_score.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/loss_annotation.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_annotation.png" width='320'/>
+<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/training_loss.png" width='380'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_score.png" width='380'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/loss_annotation.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_annotation.png" width='320'/>
 </figure></div>  
 
 #### Hugging face transfer learning
@@ -80,10 +80,10 @@ The transferred model performs better than rnn and lstm, but worse than gru and 
 
 #### Seq2Seq model
 At last, I developed Seq2Seq model to predict the summary for reviews, it's consisted with encoder, decoder, encoder-decoder models. The raw text(reviews) look like:  
-<div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/text.png" width='320'/></div>  
+<div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/text.png" width='450'/></div>  
 Below are the ground truth summary and our predicted summary:   
 <div align=center><figure class="two">
-<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/summary.png" width='400'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/prediction.png" width='400'/>
+<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/summary.png" width='430'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/prediction.png" width='430'/>
 </figure></div>  
 
 ### Acknowledge  
