@@ -1,0 +1,2 @@
+# Natural-Language-Processing
+Given Amazon Reviews Dataset, 4 models are established and compared here (RNN, LSTM, GRU, BILSTM) to predict custormers' rankings from given review, also the best model is compared with/without attention; On top of this, hugging face pretrained model is introduced for transfer learning; Last but not least, Seq2Seq model is built to predict customers' summaries according to their reviews.
