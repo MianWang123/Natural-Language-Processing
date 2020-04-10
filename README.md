@@ -20,35 +20,37 @@ https://drive.google.com/file/d/1NPN0XjMOref0T8JSTy1413QxrNnOCQ7F/view?usp=shari
 The whole prodecure can be divided into preprocessing the data, building recurrent models, tranfer learning, and establishing sequence to sequence model. Details can be found in the code, the framework is listed below.  
 Part 1  
 1. Build the Baseline  
-  1) lemmatize text  
-  2) evaluate ratio of each review  
-  3) realize threshold baseline  
+  - lemmatize text  
+  - evaluate ratio of each review  
+  - realize threshold baseline  
 2. Featurize the Dataset Using Torchtext   
-  1) create torchtext data fields    
-  2) create a tabular dataset  
-  3) build vocab  
-  4) create an iterator for the dataset  
+  - create torchtext data fields    
+  - create a tabular dataset  
+  - build vocab  
+  - create an iterator for the dataset  
 3. Establish the Recurrent Models  
-  1) design an embedding layer   
-  2) pack the embedded data (optional)    
-  2) build a rnn/lstm/gru/bilstm layer  
-  3) add "attention", "teacher forcing", or "beam search" module (optional)  
-  4) design a fully connected layer  
+  - design an embedding layer   
+  - pack the embedded data (optional)    
+  - build a rnn/lstm/gru/bilstm layer  
+  - add "attention", "teacher forcing", or "beam search" module (optional)  
+  - design a fully connected layer  
 4. Train/Evaluate the Model  
+
 Part 2  
 1. Transfer Learning Using Hugging Face  
+
 Part 3  
 1. Develop the Seq2Seq Model  
-  1) featurize the dataset like before  
-  2) build the encoder  
-  3) build the decoder  
-  4) build encoder-decoder combined model  
-  5) train/evaluate the model  
+  - featurize the dataset like before  
+  - build the encoder  
+  - build the decoder  
+  - build encoder-decoder combined model  
+  - train/evaluate the model  
   
 
 ### Data Visualization
 #### Baseline
-To begin with, I need to define a non-deep-learning baseline in case deep learning method performs bad or doesn't fit here. To do this, I utilized <div align=center><img src="http://chart.googleapis.com/chart?cht=tx&chl= ratio = \frac{positive}{positive + negative}" style="border:none;"></div> as criterion to evaluate reviews' ratings. During the process, I need to lemmatize each word, a portion of original words v.s lemmatized words is as follows:  
+To begin with, I need to define a non-deep-learning baseline in case deep learning method performs bad or doesn't fit here. To do this, I utilized "ratio" below as criterion to evaluate reviews' ratings.  <div align=center><img src="http://chart.googleapis.com/chart?cht=tx&chl= ratio = \frac{positive}{positive + negative}" style="border:none;"></div>   During the process, I need to lemmatize each word, a portion of original words v.s lemmatized words is as follows:  
 <div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/lemmatized_words.png"></div>  
 After implementing the baseline, I get the confusion matrix below:  
 <div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/baseline_confusion.png" width='320'/></div>  
@@ -57,15 +59,15 @@ where y-axis represents the true ratings of customers', x-axis is the predicted 
 #### RNN, LSTM, GRU, BILSTM
 Then, I can start to built the recurrent models(rnn, lstm, gru, bilstm), their confusion matrices are shown respectively below:
 <div align=center><figure class="four">
-<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/rnn_confusion.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/lstm_confusion.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/gru_confusion.png" width='200'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/bilstm_confusion.png" width='200'/>
+<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/rnn_confusion.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/lstm_confusion.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/gru_confusion.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/bilstm_confusion.png" width='320'/>
 </figure></div>  
 
 From these graphs, we can see that rnn performs worst, next is lstm, gru & bilstm stand out in the 4 models, they have similar performance, except that bilstm is a bit better than gru. Therefore, I tried to improve the best model - bilstm with "attention" module, the confusion matrix of bilstm with attention is below:  
-<div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/bilstm_att_confusion.png"></div>  
+<div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/bilstm_att_confusion.png" width='320'/></div>  
 
 To make it clear, I plot the training loss & F1-score graph of rnn, lstm, gru, bilstm, bilstm with "attention" as follows:     
 <div align=center><figure class="four">
-<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/training_loss.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/loss_annotation.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/loss_annotation.png" width='200'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/training_loss.png" width='200'/>
+<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/training_loss.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_score.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/loss_annotation.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/f1_annotation.png" width='320'/>
 </figure></div>  
 
 #### Hugging face transfer learning
@@ -78,10 +80,10 @@ The transferred model performs better than rnn and lstm, but worse than gru and 
 
 #### Seq2Seq model
 At last, I developed Seq2Seq model to predict the summary for reviews, it's consisted with encoder, decoder, encoder-decoder models. The raw text(reviews) look like:  
-<div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/text.png"></div>  
+<div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/text.png" width='320'/></div>  
 Below are the ground truth summary and our predicted summary:   
 <div align=center><figure class="two">
-<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/summary.png" width='320'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/prediction.png" width='320'/>
+<img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/summary.png" width='400'/><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/prediction.png" width='400'/>
 </figure></div>  
 
 ### Acknowledge  
