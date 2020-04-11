@@ -8,7 +8,7 @@ Time: 4/10/20
 from google.colab import drive
 drive.mount('/content/drive')
 
-
+# define the function to plot confusion matrix
 from textwrap import wrap
 import re
 import itertools
@@ -16,7 +16,6 @@ import matplotlib
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
-# define the function to plot confusion matrix
 # Credits - https://stackoverflow.com/questions/41617463/tensorflow-confusion-matrix-in-tensorboard
 def plot_confusion_matrix(correct_labels, predict_labels, labels, display_labels, title='Confusion matrix', tensor_name = 'MyFigure/image', normalize=False):
   ''' 
@@ -65,20 +64,17 @@ from sklearn.metrics import f1_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
  
- 
 # import training and validation dataset from google drive
 root_path = '/content/drive/My Drive/CIS522 Homeworks/HW4/'
 train = pd.read_csv(root_path + 'train.csv')
 val = pd.read_csv(root_path + 'val.csv')
-  
-  
+    
 # import the natural language toolkit to tokenize and lemmatize text
 import nltk
 from nltk.stem import WordNetLemmatizer 
 nltk.download('wordnet')
 nltk.download('punkt') # Download this as this allows you to tokenize words in a string.
 lemmatizer = WordNetLemmatizer() 
-
 
 # import 'MPQA_Subjectivity_Lexicon.tff' to determine if a word has a "positive" or a "negative" connotation
 with open (root_path+'MPQA_Subjectivity_Lexicon.tff', 'r') as file:
@@ -89,8 +85,7 @@ for i,s in enumerate(f):
   len1, len2 = s[start1:].find(' '), s[start2:].find('\n')
   word, pol = s[start1:start1+len1], s[start2:start2+len2]
   lem = lemmatizer.lemmatize(word)
-  polarity[lem] = int(pol=='positive')
-  
+  polarity[lem] = int(pol=='positive')  
   
 # define a function to evaluate "ratio" of each review
 def ratio(s):
@@ -108,20 +103,17 @@ def ratio(s):
   if pos+neg == 0: return 0.5
   else: return pos/(pos+neg), pos, neg
  
- 
 # compute the ratio of each review for training set
 train['Ratio'], train['pos_neg'] = None, None
 for i in range(len(train)):
   ro, pos, neg = ratio(train['Text'][i])
   train['Ratio'][i], train['pos_neg'][i] = ro, (pos, neg)
 
-
 # compute the ratio of each review for validation set
 val['Ratio'], val['pos_neg'] = None, None
 for i in range(len(val)):
   ro, pos, neg = ratio(val['Text'][i])
   val['Ratio'][i], val['pos_neg'][i] = ro, (pos, neg)
- 
  
 # pick the threshhold for 5 ratings (the baseline threshold to determine whether the rating is 1,2,3,4,5)
 ratio_at_score_1 = train[train['Score']==1]['Ratio']
@@ -132,7 +124,6 @@ ratio_at_score_5 = train[train['Score']==5]['Ratio']
 mean1, mean2, mean3, mean4, mean5 = np.mean(ratio_at_score_1), np.mean(ratio_at_score_2), np.mean(ratio_at_score_3), np.mean(ratio_at_score_4), np.mean(ratio_at_score_5)
 thresh12, thresh23, thresh34, thresh45 = np.mean([mean1,mean2]), np.mean([mean2,mean3]), np.mean([mean3,mean4]), np.mean([mean4,mean5])
 
-
 # define the function to predict rating based on ratio and threshold
 def classify(ratio):
   if ratio <= thresh12: return 1
@@ -140,20 +131,17 @@ def classify(ratio):
   elif ratio <= thresh34: return 3
   elif ratio <= thresh45: return 4
   else: return 5
-  
-  
+    
 # predict the rating for training set (with baseline threshold)
 train['Predict'] = None
 for i in range(len(train)):
   train['Predict'][i] = classify(train['Ratio'][i])
 
-
 # predict the rating for validation set (with baseline threshold)
 val['Predict'] = None
 for i in range(len(val)):
   val['Predict'][i] = classify(val['Ratio'][i])
- 
- 
+  
 # calculate F1-score for train and val dataset
 F1_train = f1_score(list(train['Score']), list(train['Predict']), average='macro')
 F1_val = f1_score(list(val['Score']), list(val['Predict']), average='macro')
@@ -188,17 +176,14 @@ except Exception:
 TEXT = data.Field(sequential=True, tokenize='spacy', lower=True, include_lengths=True)
 LABEL = data.Field(sequential=False, use_vocab=False)
 
-
 # create a tabular dataset
 datafields = [(' ', None), (' ', None), (' ', None), (' ', None), (' ', None), (' ', None), \
               (' ', None), ('Score', LABEL), (' ', None), ('Summary', TEXT), ('Text', TEXT)]
 training_data = data.TabularDataset(root_path + 'train.csv', format='csv', fields=datafields, skip_header=True)
 val_data = data.TabularDataset(root_path + 'val.csv', format='csv', fields=datafields, skip_header=True)
 
-
 # build vocab with GloVe (use the glove.6B.300d word embedding, and save the vocbulary)
 TEXT.build_vocab(training_data, val_data, min_freq=3, vectors=torchtext.vocab.GloVe(name='6B', dim=300))
-
 
 # create an iterator for the dataset
 batch_size = 64
@@ -371,7 +356,6 @@ def evaluate_classifier(model, dataset_iterator, loss_function, recurrent = Fals
   print("Test statistics: F1-Score: %.4f Loss: %.4f"%(f1, total_loss/total))
   return true_labels, predict_labels
 
-
 # set the hyper-parameters 
 output_size = 5
 hidden_size = 256
@@ -379,7 +363,6 @@ vocab_size = len(TEXT.vocab)
 embedding_length = 300
 word_embeddings = TEXT.vocab.vectors
 epochs = 5
-
 
 # Establish LSTM to train/validate dataset and plot the confusion matrix
 model_lstm = ReviewClassifier('lstm', output_size, hidden_size, vocab_size, embedding_length, word_embeddings)
@@ -392,7 +375,6 @@ train_classifier(model_lstm, train_iterator, criterion, optimizer, log = logger_
 true_labels_lstm, predict_labels_lstm = evaluate_classifier(model_lstm, val_iterator, criterion, recurrent = True)
 plot_confusion_matrix(true_labels_lstm, predict_labels_lstm, [1,2,3,4,5], ['1','2','3','4','5'], title='Confusion matrix', tensor_name = 'LSTM', normalize=False)
 
-
 # Establish RNN to train/validate dataset and plot the confusion matrix
 model_rnn = ReviewClassifier('rnn', output_size, hidden_size, vocab_size, embedding_length, word_embeddings)
 model_rnn = model_rnn.to(device)
@@ -404,7 +386,6 @@ train_classifier(model_rnn, train_iterator, criterion, optimizer, log = logger_r
 true_labels_rnn, predict_labels_rnn = evaluate_classifier(model_rnn, val_iterator, criterion, recurrent = True)
 plot_confusion_matrix(true_labels_rnn, predict_labels_rnn, [1,2,3,4,5], ['1','2','3','4','5'], title='Confusion matrix', tensor_name = 'RNN', normalize=False)
 
-
 # Establish GRU(Gated Recurrent Unit) to train/validate dataset and plot the confusion matrix
 model_gru = ReviewClassifier('gru', output_size, hidden_size, vocab_size, embedding_length, word_embeddings)
 model_gru = model_gru.to(device)
@@ -415,7 +396,6 @@ logger_gru = 'runs/gru'
 train_classifier(model_gru, train_iterator, criterion, optimizer, log = logger_gru, epochs = epochs, print_every = 100, recurrent = True)
 true_labels_gru, predict_labels_gru = evaluate_classifier(model_gru, val_iterator, criterion, recurrent = True)
 plot_confusion_matrix(true_labels_gru, predict_labels_gru, [1,2,3,4,5], ['1','2','3','4','5'], title='Confusion matrix', tensor_name = 'GRU', normalize=False)
-
 
 # Establish BILSTM to train/validate dataset and plot the confusion matrix
 model_bilstm = ReviewClassifier('bilstm', output_size, hidden_size, vocab_size, embedding_length, word_embeddings)
@@ -446,7 +426,6 @@ class Attention(nn.Module):
     context = torch.sum(alpha * encoder_outputs, dim=0).unsqueeze(0)
     att = torch.cat((context, hidden), dim=2)
     return att
-
 attention = Attention(hidden_size).to(device)
 
 
@@ -545,17 +524,14 @@ plot_confusion_matrix(true_labels_bilstm_att, predict_labels_bilstm_att, [1,2,3,
 # install the library 'Simple Transformers', which makes transfer learning extremely easy
 !pip install simpletransformers
 
-
 # initialize the classification model
 from simpletransformers.classification import ClassificationModel
 model1 = ClassificationModel('roberta', 'roberta-base', num_labels=6, args=({'fp16': False, 'reprocess_input_data': True}))
 model2 = ClassificationModel('camembert', 'camembert-base', num_labels=6, args=({'fp16': False, 'reprocess_input_data': True}))
 
-
 # clean the data with designated form
 train_df_cleaned = train[['Text', 'Score']].rename(columns={"Text":"text", "Score":"labels"})
 test_df_cleaned = val[['Text', 'Score']].rename(columns={"Text":"text", "Score":"labels"})
-
 
 # train the model('roberta')
 model1.train_model(train_df_cleaned, output_dir='outputs/model1')
@@ -566,7 +542,6 @@ result1, model_outputs1, wrong_predictions1 = model1.eval_model(test_df_cleaned)
 model2.train_model(train_df_cleaned, output_dir='outputs/model2')
 # evaluate the model('camembert')
 result2, model_outputs2, wrong_predictions2 = model2.eval_model(test_df_cleaned)
-
 
 # predict with trained model('roberta'), compute F1-score, and plot confusion matrix
 predict1 = np.argmax(model_outputs1, axis=1).tolist()
@@ -588,16 +563,13 @@ datafields = [(' ', None), (' ', None), (' ', None), (' ', None), (' ', None), (
 train_s2s = data.TabularDataset('/content/drive/My Drive/CIS522 Homeworks/HW4/train.csv', format='csv', fields=datafields, skip_header=True)
 val_s2s = data.TabularDataset('/content/drive/My Drive/CIS522 Homeworks/HW4/val.csv', format='csv', fields=datafields, skip_header=True)
 
-
 # build Vocabulary for dataset
 TEXT_S2S.build_vocab(train_s2s, val_s2s, min_freq=3, vectors=torchtext.vocab.GloVe('6B', dim=300))
-
 
 # establish BucketIterator for training set and validation set
 batch_size = 64
 train_s2s_iterator = data.BucketIterator(train_s2s, batch_size, sort_key=lambda x: len(x.Text), sort_within_batch=True, shuffle=True, device=device)
 val_s2s_iterator = data.BucketIterator(val_s2s, batch_size=1, sort_key=lambda x: len(x.Text), sort_within_batch=True, shuffle=True, device=device)
-
 
 # set hyper-parameters for seq2seq model
 hidden_size = 256
@@ -605,7 +577,6 @@ vocab_size = len(TEXT_S2S.vocab)
 embedding_size = 300
 word_embeddings = TEXT_S2S.vocab.vectors
 epochs = 1
-
 
 # Define a BILSTM Encoder
 class Encoder(nn.Module):
@@ -634,7 +605,6 @@ class Encoder(nn.Module):
     hidden_text = (hidden_text[0] + hidden_text[1]).unsqueeze(0)
     output_text = output_text[:,:,:self.hidden_size] + output_text[:,:,self.hidden_size:]  
     return output_text, hidden_text
-
 encoder = Encoder(hidden_size, vocab_size, embedding_size, word_embeddings).to(device)
 
 
@@ -671,9 +641,7 @@ class Decoder(nn.Module):
     # Fully Connected Layer
     prediction = self.fc1(output_rnn.squeeze(0))
     return prediction
-
 decoder = Decoder(hidden_size, vocab_size, embedding_size, word_embeddings).to(device)
-
 
 # put encoder-decoder together
 class Encoder_Decoder(nn.Module):
@@ -697,9 +665,7 @@ class Encoder_Decoder(nn.Module):
       outputs[t] = prediction
       decoder_input = prediction.argmax(1)
     return outputs
-
 model_s2s = Encoder_Decoder(encoder, decoder).to(device)
-
 
 # define a function for Seq2Seq model training
 def train_classifier_s2s(model, dataset_iterator, loss_function, optimizer, batch_size, epochs=10, log="runs", verbose=True, print_every=100):
@@ -745,7 +711,6 @@ optimizer = torch.optim.Adam(model_s2s.parameters(), lr=0.001)
 logger_s2s = 'runs/s2s'
 train_classifier_s2s(model_s2s, train_s2s_iterator, criterion, optimizer, batch_size, epochs=epochs, log=logger_s2s, verbose=True, print_every=100)
 
-
 def process(l):
   # get rid of '<unk>', '<pad>', '<start>', '<end>'
   stopwords = ['<unk>', '<pad>', '<start>', '<end>']
@@ -784,7 +749,6 @@ def evaluate_classifier(model, dataset_iterator, log='seqs', batch_size=1):
       writer.add_text('Text', process(Text), i+1)
       writer.add_text('Summary', process(Summary), i+1)
       writer.add_text('Prediction', process(Prediction), i+1)
-
 
 # evaluate seq2seq model
 logger_seqs = 'seqs/s2s'
