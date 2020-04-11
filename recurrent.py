@@ -578,6 +578,7 @@ embedding_size = 300
 word_embeddings = TEXT_S2S.vocab.vectors
 epochs = 1
 
+
 # Define a BILSTM Encoder
 class Encoder(nn.Module):
   def __init__(self, hidden_size, vocab_size, embedding_size, word_embeddings, dropout_v=0.2):
@@ -643,6 +644,7 @@ class Decoder(nn.Module):
     return prediction
 decoder = Decoder(hidden_size, vocab_size, embedding_size, word_embeddings).to(device)
 
+
 # put encoder-decoder together
 class Encoder_Decoder(nn.Module):
   def __init__(self, encoder, decoder):
@@ -666,6 +668,7 @@ class Encoder_Decoder(nn.Module):
       decoder_input = prediction.argmax(1)
     return outputs
 model_s2s = Encoder_Decoder(encoder, decoder).to(device)
+
 
 # define a function for Seq2Seq model training
 def train_classifier_s2s(model, dataset_iterator, loss_function, optimizer, batch_size, epochs=10, log="runs", verbose=True, print_every=100):
@@ -702,8 +705,7 @@ def train_classifier_s2s(model, dataset_iterator, loss_function, optimizer, batc
           print("--- Step: %s Training Loss: %.4f" %(step, total_loss/total))
       step = step+1
       if step == 5000: break
-  print("Epoch: %s Training Loss: %.4f"%(epoch+1, total_loss/total))
-  
+  print("Epoch: %s Training Loss: %.4f"%(epoch+1, total_loss/total))  
 
 # train data with seq2seq model
 criterion = nn.CrossEntropyLoss()
@@ -711,12 +713,13 @@ optimizer = torch.optim.Adam(model_s2s.parameters(), lr=0.001)
 logger_s2s = 'runs/s2s'
 train_classifier_s2s(model_s2s, train_s2s_iterator, criterion, optimizer, batch_size, epochs=epochs, log=logger_s2s, verbose=True, print_every=100)
 
+
 def process(l):
   # get rid of '<unk>', '<pad>', '<start>', '<end>'
   stopwords = ['<unk>', '<pad>', '<start>', '<end>']
   new_l = [s for s in l if s not in stopwords]
   res = ' '.join(new_l)
-  return res
+  return res 
   
 # define a function to evaluate Seq2Seq model
 def evaluate_classifier(model, dataset_iterator, log='seqs', batch_size=1):
