@@ -50,7 +50,7 @@ Part 3
 
 ### Data Visualization
 #### Baseline
-To begin with, I need to define a non-deep-learning baseline in case deep learning method performs bad or doesn't fit here. To do this, I utilized "ratio" below as criterion to evaluate reviews' ratings.  <div align=center><img src="http://chart.googleapis.com/chart?cht=tx&chl= ratio = \frac{positive}{positive + negative}" style="border:none;"></div>   During the process, I need to lemmatize each word, a portion of original words v.s lemmatized words is as follows:  
+To begin with, I need to define a non-deep-learning baseline in case deep learning method performs bad or doesn't fit here. To do this, I utilized "ratio" below as criterion to evaluate reviews' ratings.  <div align=center><img src="http://chart.googleapis.com/chart?cht=tx&chl= ratio = \frac{positive}{positive %2B negative}" style="border:none;"></div>   During the process, I need to lemmatize each word, a portion of original words v.s lemmatized words is as follows:  
 <div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/lemmatized_words.png"></div>  
 After implementing the baseline, I get the confusion matrix below:  
 <div align=center><img src="https://github.com/MianWang123/Natural-Language-Processing/blob/master/pics/baseline_confusion.png" width='320'/></div>  
