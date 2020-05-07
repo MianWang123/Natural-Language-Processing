@@ -18,7 +18,7 @@ https://drive.google.com/file/d/1NPN0XjMOref0T8JSTy1413QxrNnOCQ7F/view?usp=shari
 
 ### Introduction
 The whole prodecure can be divided into preprocessing the data, building recurrent models, tranfer learning, and establishing sequence to sequence model. Details can be found in the code, the framework is listed below.  
-Part 1  
+Part 1 (4 different models, RNN,LSTM,GRU,BILSTM)
 1. Build the Baseline  
   - lemmatize text  
   - evaluate ratio of each review  
@@ -36,10 +36,10 @@ Part 1
   - design a fully connected layer  
 4. Train/Evaluate the Model  
 
-Part 2  
+Part 2 (transfer learning)
 1. Transfer Learning Using Hugging Face  
 
-Part 3  
+Part 3 (seq2seq model)
 1. Develop the Seq2Seq Model  
   - featurize the dataset like before  
   - build the encoder  
